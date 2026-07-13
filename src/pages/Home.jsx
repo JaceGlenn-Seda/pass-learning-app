@@ -78,7 +78,7 @@ export default function Home() {
 
             <div className="relative hidden lg:block">
               <div className="absolute -inset-4 rounded-3xl bg-white/5 backdrop-blur" />
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80" alt="Professional learner" className="relative rounded-2xl shadow-lift object-cover h-[420px] w-full" />
+              <img src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=800&q=80" alt="" className="relative rounded-2xl shadow-lift" />
               <div className="absolute -bottom-6 -left-6 w-64 rounded-2xl border border-border bg-card p-4 shadow-lift">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100"><Award className="text-green-600" size={20} /></div>
@@ -92,30 +92,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Phase 1 Features */}
-      <section className="border-b border-border bg-muted/40 py-10">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-widest text-accent mb-6">✓ Included in Phase 1 — Live Now</p>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-4">
-            {[
-              'User authentication & learner profiles',
-              'Course player — video, slides & PDF notes',
-              'Self-paced progression engine',
-              'Progress tracking dashboard',
-              'Push notifications & learning reminders',
-              'Auto-generated certificates of completion',
-              'Credits system — single + 3 bundle packs',
-              'M-Pesa payment integration',
-            ].map(f => (
-              <div key={f} className="flex items-start gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3">
-                <Check className="mt-0.5 shrink-0 text-green-600" size={15} />
-                <span className="text-xs font-medium text-secondary">{f}</span>
-              </div>
-            ))}
           </div>
         </div>
       </section>
