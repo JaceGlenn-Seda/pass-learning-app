@@ -1,0 +1,91 @@
+{
+  "name": "Module",
+  "type": "object",
+  "properties": {
+    "course_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "order": {
+      "type": "number"
+    },
+    "module_type": {
+      "type": "string",
+      "enum": [
+        "video",
+        "slides",
+        "quiz"
+      ]
+    },
+    "video_url": {
+      "type": "string"
+    },
+    "video_provider": {
+      "type": "string",
+      "enum": [
+        "upload",
+        "youtube",
+        "vimeo"
+      ]
+    },
+    "slides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "bullets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "quiz_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "correct_index": {
+            "type": "number"
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "duration_minutes": {
+      "type": "number",
+      "default": 10
+    },
+    "passing_score": {
+      "type": "number",
+      "default": 70
+    }
+  },
+  "required": [
+    "course_id",
+    "title",
+    "order",
+    "module_type"
+  ]
+}

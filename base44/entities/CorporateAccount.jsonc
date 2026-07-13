@@ -1,0 +1,32 @@
+{
+  "name": "CorporateAccount",
+  "type": "object",
+  "properties": {
+    "company_name": {
+      "type": "string"
+    },
+    "admin_name": {
+      "type": "string"
+    },
+    "plan_name": {
+      "type": "string"
+    },
+    "total_credits": {
+      "type": "number"
+    },
+    "allocated_credits": {
+      "type": "number",
+      "default": 0
+    },
+    "employee_count": {
+      "type": "number",
+      "default": 0
+    },
+    "plan_price_kes": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "company_name"
+  ]
+}

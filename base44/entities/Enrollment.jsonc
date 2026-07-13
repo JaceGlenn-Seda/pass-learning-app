@@ -1,0 +1,55 @@
+{
+  "name": "Enrollment",
+  "type": "object",
+  "properties": {
+    "course_id": {
+      "type": "string"
+    },
+    "course_title": {
+      "type": "string"
+    },
+    "course_thumbnail": {
+      "type": "string"
+    },
+    "completed_module_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "current_module_id": {
+      "type": "string"
+    },
+    "progress": {
+      "type": "number",
+      "default": 0
+    },
+    "quiz_score": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "completed"
+      ],
+      "default": "in_progress"
+    },
+    "unlocked": {
+      "type": "boolean",
+      "default": false
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "learning_hours": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "course_id",
+    "course_title"
+  ]
+}

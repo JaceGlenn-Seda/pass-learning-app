@@ -1,0 +1,31 @@
+{
+  "name": "Certificate",
+  "type": "object",
+  "properties": {
+    "learner_name": {
+      "type": "string"
+    },
+    "course_id": {
+      "type": "string"
+    },
+    "course_title": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number"
+    },
+    "certificate_id": {
+      "type": "string"
+    },
+    "issue_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "learner_name",
+    "course_id",
+    "course_title",
+    "certificate_id"
+  ]
+}

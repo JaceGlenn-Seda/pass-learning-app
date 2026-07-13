@@ -1,0 +1,65 @@
+{
+  "name": "Course",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "thumbnail": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Leadership",
+        "Communication",
+        "Management",
+        "Personal Development"
+      ]
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "Foundation",
+        "Intermediate",
+        "Advanced"
+      ],
+      "default": "Intermediate"
+    },
+    "duration_minutes": {
+      "type": "number"
+    },
+    "module_count": {
+      "type": "number"
+    },
+    "instructor": {
+      "type": "string"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": true
+    },
+    "order": {
+      "type": "number",
+      "default": 99
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "thumbnail",
+    "category"
+  ]
+}

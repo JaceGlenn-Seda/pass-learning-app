@@ -1,0 +1,47 @@
+{
+  "name": "CreditTransaction",
+  "type": "object",
+  "properties": {
+    "amount_kes": {
+      "type": "number"
+    },
+    "credits": {
+      "type": "number"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "purchase",
+        "spend",
+        "grant"
+      ]
+    },
+    "package_name": {
+      "type": "string"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "mpesa",
+        "card",
+        "grant"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "default": "completed"
+    },
+    "reference": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "type",
+    "credits"
+  ]
+}

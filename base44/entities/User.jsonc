@@ -1,0 +1,34 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "learner",
+        "corporate_admin"
+      ],
+      "default": "learner"
+    },
+    "credit_balance": {
+      "type": "number",
+      "default": 0
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "company": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "corporate_account_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "role"
+  ]
+}
