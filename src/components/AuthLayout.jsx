@@ -12,7 +12,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 via-secondary/40 to-secondary/30" />
         {/* Logo top-left */}
         <div className="absolute left-8 top-8">
-          <PassLogo light className="h-10" />
+          <PassLogo light className="h-14" />
         </div>
         {/* Tagline bottom-left */}
         <div className="absolute bottom-10 left-8 right-8">
@@ -30,7 +30,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         <div className="w-full max-w-md">
           {/* Logo on mobile only */}
           <div className="mb-8 flex justify-center lg:hidden">
-            <PassLogo className="h-10" />
+            <PassLogo className="h-14" />
           </div>
           <div className="mb-8 text-center">
             {Icon && (
