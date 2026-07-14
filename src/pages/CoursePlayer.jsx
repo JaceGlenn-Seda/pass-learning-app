@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import confetti from 'canvas-confetti';
 import { useParams, Link, useNavigate, useOutletContext } from 'react-router-dom';
 import {
   CheckCircle2, Circle, ChevronRight, ChevronLeft, Play, Lock,
@@ -107,6 +108,12 @@ export default function CoursePlayer() {
         type: 'milestone',
         action_url: '/certificates',
       });
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#1B3A8C', '#2E6FE8', '#F5A623', '#E63946'] });
+      base44.integrations.Core.SendEmail({
+        to: user?.email,
+        subject: 'Your PASS Certificate is ready 🏅',
+        body: `Hi ${user?.full_name || 'there'},\n\nCongratulations! You've completed <strong>${course.title}</strong> with a score of <strong>${score}%</strong>.\n\nYour certificate is ready to view and download: https://pass.learning/certificates\n\nWell done,\nThe PASS Team`,
+      }).catch(() => {});
       setQuizState({ score, passed, correct, total: questions.length, certificateId: certId });
     } else {
       setQuizState({ score, passed, correct, total: questions.length });
@@ -179,7 +186,7 @@ export default function CoursePlayer() {
               {activeModule?.module_type !== 'quiz' && (
                 <button
                   onClick={handleCompleteAndContinue}
-                  className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary/90"
+                  className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-95"
                 >
                   Complete & Continue <ChevronRight size={16} />
                 </button>

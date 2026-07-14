@@ -4,6 +4,7 @@ import { Search, Lock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import CourseCard from '@/components/CourseCard';
 import { useToast } from '@/components/ui/use-toast';
+import confetti from 'canvas-confetti';
 
 export default function Catalogue() {
   const { user, refreshUser } = useOutletContext() || {};
@@ -68,8 +69,14 @@ export default function Catalogue() {
         action_url: `/course/${course.id}`,
       });
       refreshUser();
-      setEnrollments(await base44.entities.Enrollment.filter({}, '-updated_date', 50));
-      toast({ title: 'Course unlocked!', description: `${course.title} is now in your learning path.` });
+      setEnrollments(await base44.entities.Enrollment.filter({ created_by_id: user.id }, '-updated_date', 50));
+      confetti({ particleCount: 90, spread: 70, origin: { y: 0.7 }, colors: ['#1B3A8C', '#2E6FE8', '#F5A623', '#E63946'] });
+      toast({ title: 'Course unlocked! 🎉', description: `${course.title} is now in your learning path.` });
+      base44.integrations.Core.SendEmail({
+        to: user.email,
+        subject: `You've unlocked ${course.title} 🚀`,
+        body: `Hi ${user.full_name || 'there'},\n\nGreat news — you've just unlocked <strong>${course.title}</strong> on PASS Learning!\n\nLog in now to start your learning journey: https://pass.learning/course/${course.id}\n\nKeep growing,\nThe PASS Team`,
+      }).catch(() => {});
     } catch (err) {
       toast({ title: 'Something went wrong', description: err.message, variant: 'destructive' });
     } finally {

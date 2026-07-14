@@ -39,6 +39,11 @@ export default function Dashboard() {
           });
           setEnrollments([enrollment]);
         }
+        base44.integrations.Core.SendEmail({
+          to: user.email,
+          subject: 'Welcome to PASS Learning 🎉',
+          body: `Hi ${user.full_name || 'there'},\n\nWelcome to PASS Learning — East Africa's premium soft-skills platform!\n\nYou've been given 3 starter credits. Use them to unlock any course and start earning certificates that move your career forward.\n\nBrowse the catalogue: https://pass.learning/catalogue\n\nHappy learning,\nThe PASS Team`,
+        }).catch(() => {});
         refreshUser?.();
       }
     }).finally(() => setLoading(false));

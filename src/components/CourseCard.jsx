@@ -47,7 +47,7 @@ export default function CourseCard({ course, enrollment, onUnlock, unlocking }) 
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
               <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }} />
             </div>
-            <Link to={`/course/${course.id}`} className="mt-3 block w-full rounded-lg bg-primary py-2.5 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+            <Link to={`/course/${course.id}`} className="mt-3 block w-full rounded-lg bg-primary py-2.5 text-center text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-95">
               {progress > 0 ? 'Continue Learning' : 'Start Course'}
             </Link>
           </div>
@@ -55,7 +55,7 @@ export default function CourseCard({ course, enrollment, onUnlock, unlocking }) 
           <button
             onClick={() => onUnlock && onUnlock(course)}
             disabled={unlocking}
-            className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg border border-gold/50 bg-gold/10 py-2.5 text-sm font-semibold text-secondary transition-colors hover:bg-gold/20 disabled:opacity-60"
+            className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg border border-gold/50 bg-gold/10 py-2.5 text-sm font-semibold text-secondary transition-all hover:bg-gold/20 active:scale-95 disabled:opacity-60"
           >
             <Lock size={14} /> Unlock with 1 credit
           </button>
