@@ -78,7 +78,7 @@ export default function Home() {
 
             <div className="relative hidden lg:block">
               <div className="absolute -inset-4 rounded-3xl bg-white/5 backdrop-blur" />
-              <img src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=800&q=80" alt="" className="relative rounded-2xl shadow-lift" />
+              <img src="https://media.base44.com/images/public/6a552d72363fc33d755650fa/fc6ed300c_image.png" alt="PASS Learning professionals" className="relative rounded-2xl shadow-lift object-cover" />
               <div className="absolute -bottom-6 -left-6 w-64 rounded-2xl border border-border bg-card p-4 shadow-lift">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100"><Award className="text-green-600" size={20} /></div>
