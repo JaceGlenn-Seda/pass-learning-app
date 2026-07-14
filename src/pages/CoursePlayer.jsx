@@ -7,6 +7,7 @@ import {
   CheckCircle2, ChevronRight, ChevronLeft, Play, Lock, Award,
   X, Check, RefreshCw, PanelRightOpen, Share2, Sparkles, Send,
   FileText, Video, ListChecks, ChevronDown, StickyNote,
+  Menu, BookOpen, Compass, Coins, LogOut, LayoutDashboard,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { base44 } from '@/api/base44Client';
@@ -31,6 +32,7 @@ export default function CoursePlayer() {
   const [sideTab, setSideTab] = useState('content');
   const [bottomTab, setBottomTab] = useState('overview');
   const [progressOpen, setProgressOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -130,8 +132,41 @@ export default function CoursePlayer() {
 
   return (
     <div className="-m-4 flex min-h-screen flex-col bg-white lg:-m-8">
+      {/* HAMBURGER DRAWER */}
+      {menuOpen && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setMenuOpen(false)} />
+          <nav className="fixed left-0 top-0 z-50 flex h-full w-64 flex-col bg-secondary p-5 text-white shadow-2xl animate-slide-in">
+            <div className="mb-8 flex items-center justify-between">
+              <PassLogo light className="text-xl" />
+              <button onClick={() => setMenuOpen(false)} className="rounded p-1 hover:bg-white/10"><X size={18} /></button>
+            </div>
+            {[
+              ['/dashboard', 'Dashboard', LayoutDashboard],
+              ['/my-courses', 'My Courses', BookOpen],
+              ['/catalogue', 'Catalogue', Compass],
+              ['/quizzes', 'Quizzes', ListChecks],
+              ['/certificates', 'Certificates', Award],
+              ['/credits', 'Credits', Coins],
+            ].map(([path, label, Icon]) => (
+              <Link key={path} to={path} onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-white/80 hover:bg-white/10 hover:text-white">
+                <Icon size={17} /> {label}
+              </Link>
+            ))}
+            <button onClick={() => base44.auth.logout('/')}
+              className="mt-auto flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-white/60 hover:bg-white/10 hover:text-white">
+              <LogOut size={17} /> Sign out
+            </button>
+          </nav>
+        </>
+      )}
+
       {/* DARK COURSE HEADER */}
       <header className="flex items-center gap-4 bg-secondary px-4 py-3 text-white lg:px-6">
+        <button onClick={() => setMenuOpen(true)} className="rounded-lg p-1.5 hover:bg-white/10" title="Menu">
+          <Menu size={20} />
+        </button>
         <Link to="/dashboard"><PassLogo light className="text-lg" /></Link>
         <div className="hidden h-6 w-px bg-white/20 sm:block" />
         <h1 className="flex-1 truncate text-sm font-semibold sm:text-base">{course.title}</h1>
