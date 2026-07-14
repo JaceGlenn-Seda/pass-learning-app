@@ -8,6 +8,7 @@ import {
   X, Check, RefreshCw, PanelRightOpen, Share2, Sparkles, Send,
   FileText, Video, ListChecks, ChevronDown, StickyNote,
   Menu, BookOpen, Compass, Coins, LogOut, LayoutDashboard,
+  Lightbulb, XCircle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { base44 } from '@/api/base44Client';
@@ -112,10 +113,10 @@ export default function CoursePlayer() {
         subject: 'Your PASS Certificate is ready 🏅',
         body: `Hi ${user?.full_name || 'there'},\n\nCongratulations! You completed <strong>${course.title}</strong> with a score of <strong>${score}%</strong>.\n\nView your certificate: https://pass.learning/certificates\n\nWell done,\nThe PASS Team`,
       }).catch(() => {});
-      setQuizState({ score, passed, correct, total: qs.length, certificateId: certId });
+      setQuizState({ score, passed, correct, total: qs.length, answers, certificateId: certId });
       refreshUser?.();
     } else {
-      setQuizState({ score, passed, correct, total: qs.length });
+      setQuizState({ score, passed, correct, total: qs.length, answers });
     }
   };
 
@@ -325,7 +326,7 @@ function CurriculumTab({ sections, modules, activeIdx, completedIds, onSelect, o
 }
 
 function AIAssistant({ course, modules, active }) {
-  const [msgs, setMsgs] = useState([{ role: 'ai', text: `Hi! I'm your PASS AI Tutor 👋 Ask me anything about "${course.title}" — I know every module.` }]);
+  const [msgs, setMsgs] = useState([{ role: 'ai', text: `Hi! I'm your PASS AI Tutor 👋 Ask me anything about "${course.title}".` }]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const endRef = useRef(null);
@@ -339,7 +340,7 @@ function AIAssistant({ course, modules, active }) {
     try {
       const context = modules.map(m => `${m.title}: ${m.summary || ''}`).join('\n');
       const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are the PASS AI Tutor for the course "${course.title}" by Parikshit Trivedi. Course modules:\n${context}\n\nCurrent module: ${active?.title}. Answer concisely, practically, grounded in the course content, with an encouraging professional tone.\n\nLearner question: ${q}`,
+        prompt: `You are the PASS AI Tutor for the course "${course.title}" by Parikshit Trivedi. Course modules:\n${context}\n\nCurrent module: ${active?.title}. Answer concisely (max 4 sentences), grounded in the course content, encouraging professional tone.\n\nLearner question: ${q}`,
       });
       const answer = typeof res === 'string' ? res : (res?.response || res?.text || 'Let me get back to you on that.');
       setMsgs(m => [...m, { role: 'ai', text: answer }]);
@@ -351,23 +352,23 @@ function AIAssistant({ course, modules, active }) {
   };
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="flex-1 space-y-3 overflow-y-auto p-4">
+    <div className="flex flex-col p-3">
+      <div className="max-h-[320px] min-h-[160px] space-y-2.5 overflow-y-auto rounded-xl bg-muted/40 p-3">
         {msgs.map((m, i) => (
-          <div key={i} className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${m.role === 'ai' ? 'bg-muted text-secondary' : 'ml-auto bg-primary text-primary-foreground'}`}>{m.text}</div>
+          <div key={i} className={`max-w-[85%] rounded-2xl px-3 py-2 text-[13px] leading-relaxed ${m.role === 'ai' ? 'bg-white text-secondary shadow-sm' : 'ml-auto bg-primary text-primary-foreground'}`}>{m.text}</div>
         ))}
-        {busy && <div className="flex gap-1 rounded-2xl bg-muted px-4 py-3 w-fit"><Dot /><Dot d="150ms" /><Dot d="300ms" /></div>}
+        {busy && <div className="flex w-fit gap-1 rounded-2xl bg-white px-3 py-2.5 shadow-sm"><Dot /><Dot d="150ms" /><Dot d="300ms" /></div>}
         <div ref={endRef} />
       </div>
-      <div className="flex flex-wrap gap-1.5 px-4 pb-2">
-        {['Summarise this module', 'Give me a real-world example', 'Quiz me on this lesson'].map(s => (
-          <button key={s} onClick={() => ask(s)} className="rounded-full border border-border px-3 py-1 text-xs font-medium text-secondary hover:bg-muted">{s}</button>
+      <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5">
+        {['Summarise this module', 'Real-world example', 'Quiz me'].map(s => (
+          <button key={s} onClick={() => ask(s)} className="shrink-0 rounded-full border border-border bg-white px-3 py-1 text-[11px] font-semibold text-secondary hover:border-primary hover:text-primary">{s}</button>
         ))}
       </div>
-      <div className="flex items-center gap-2 border-t border-border p-3">
+      <div className="mt-2 flex items-center gap-2">
         <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && ask(input)}
-          placeholder="Ask about this course…" className="flex-1 rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-primary" />
-        <button onClick={() => ask(input)} className="rounded-lg bg-primary p-2 text-primary-foreground transition-transform active:scale-95"><Send size={16} /></button>
+          placeholder="Ask about this course…" className="min-w-0 flex-1 rounded-lg border border-border px-3 py-2 text-[13px] outline-none focus:border-primary" />
+        <button onClick={() => ask(input)} className="shrink-0 rounded-lg bg-primary p-2 text-primary-foreground transition-transform active:scale-95"><Send size={16} /></button>
       </div>
     </div>
   );
@@ -474,20 +475,77 @@ function SlidesStage({ module: mod }) {
 function QuizStage({ module: mod, quizState, onSubmit, onRetry }) {
   const qs = mod.quiz_questions || [];
   const [answers, setAnswers] = useState({});
+
+  useEffect(() => { if (!quizState) setAnswers({}); }, [quizState, mod.id]);
+
+  /* ---------- REVIEW MODE ---------- */
   if (quizState) {
     return (
-      <div className="flex aspect-video flex-col items-center justify-center bg-gradient-to-br from-secondary to-primary p-8 text-center text-white">
-        <div className="text-5xl">{quizState.passed ? '🎉' : '📚'}</div>
-        <h2 className="mt-4 font-heading text-2xl font-bold">You scored {quizState.score}%</h2>
-        <p className="mt-1 text-sm text-white/70">{quizState.correct} of {quizState.total} correct · pass mark {mod.passing_score || 70}%</p>
-        {quizState.passed ? (
-          <Link to="/certificates" className="mt-6 flex items-center gap-2 rounded-lg bg-gold px-6 py-3 text-sm font-bold text-secondary transition-transform hover:scale-105"><Award size={16} /> View My Certificate</Link>
-        ) : (
-          <button onClick={onRetry} className="mt-6 flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm font-bold text-secondary transition-transform hover:scale-105"><RefreshCw size={15} /> Retry Quiz</button>
+      <div className="mx-auto max-w-2xl p-6">
+        {/* Summary banner */}
+        <div className={`flex flex-wrap items-center justify-between gap-4 rounded-2xl p-5 text-white ${quizState.passed ? 'bg-gradient-to-r from-green-600 to-green-500' : 'bg-gradient-to-r from-secondary to-primary'}`}>
+          <div>
+            <p className="text-3xl font-extrabold">{quizState.score}%</p>
+            <p className="mt-0.5 text-sm text-white/80">{quizState.correct} of {quizState.total} correct · pass mark {mod.passing_score || 70}%</p>
+          </div>
+          {quizState.passed ? (
+            <Link to="/certificates" className="flex items-center gap-2 rounded-lg bg-gold px-5 py-2.5 text-sm font-bold text-secondary transition-transform hover:scale-105">
+              <Award size={16} /> View My Certificate
+            </Link>
+          ) : (
+            <button onClick={onRetry} className="flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-bold text-secondary transition-transform hover:scale-105">
+              <RefreshCw size={15} /> Retry Quiz
+            </button>
+          )}
+        </div>
+        {!quizState.passed && (
+          <p className="mt-3 text-center text-xs font-semibold text-muted-foreground">Review your answers below, then retry. You've got this. 💪</p>
         )}
+
+        {/* Per-question review */}
+        <div className="mt-6 space-y-5">
+          {qs.map((q, qi) => {
+            const picked = quizState.answers?.[qi];
+            const right = picked === q.correct_index;
+            return (
+              <div key={qi} className={`rounded-2xl border-2 p-5 ${right ? 'border-green-500 bg-green-50/60' : 'border-red-400 bg-red-50/60'}`}>
+                <div className="flex items-start gap-2.5">
+                  {right
+                    ? <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-green-600" />
+                    : <XCircle size={20} className="mt-0.5 shrink-0 text-red-500" />}
+                  <p className="text-sm font-bold text-secondary">{qi + 1}. {q.question}</p>
+                </div>
+                <div className="mt-3 space-y-2 pl-7">
+                  {q.options.map((o, oi) => {
+                    const isCorrect = oi === q.correct_index;
+                    const isPicked = oi === picked;
+                    return (
+                      <div key={oi} className={`flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm
+                        ${isCorrect ? 'border-green-500 bg-green-100/70 font-semibold text-green-800'
+                          : isPicked ? 'border-red-400 bg-red-100/70 text-red-700 line-through'
+                          : 'border-border/60 bg-white/60 text-muted-foreground'}`}>
+                        {isCorrect && <Check size={14} className="shrink-0 text-green-600" strokeWidth={3} />}
+                        {isPicked && !isCorrect && <X size={14} className="shrink-0 text-red-500" strokeWidth={3} />}
+                        {o}
+                      </div>
+                    );
+                  })}
+                </div>
+                {!right && q.explanation && (
+                  <div className="ml-7 mt-3 flex items-start gap-2 rounded-lg border border-gold/50 bg-gold/10 px-3.5 py-2.5">
+                    <Lightbulb size={15} className="mt-0.5 shrink-0 text-gold" />
+                    <p className="text-xs leading-relaxed text-secondary"><b>Why:</b> {q.explanation}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
+
+  /* ---------- TAKING MODE ---------- */
   return (
     <div className="mx-auto max-w-2xl p-6">
       <p className="text-xs font-bold uppercase tracking-widest text-accent">✨ AI-generated assessment</p>

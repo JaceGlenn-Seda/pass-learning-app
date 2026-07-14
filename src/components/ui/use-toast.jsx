@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 const TOAST_LIMIT = 3;
 const TOAST_REMOVE_DELAY = 4000;
+const TOAST_DISMISS_DELAY = 300;
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
@@ -63,25 +64,23 @@ export const reducer = (state, action) => {
     case actionTypes.DISMISS_TOAST: {
       const { toastId } = action;
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
-        addToRemoveQueue(toastId);
+        // Cancel any pending auto-remove, then schedule quick removal after exit animation
+        const existing = toastTimeouts.get(toastId);
+        if (existing) { clearTimeout(existing); toastTimeouts.delete(toastId); }
+        setTimeout(() => dispatch({ type: actionTypes.REMOVE_TOAST, toastId }), TOAST_DISMISS_DELAY);
       } else {
-        state.toasts.forEach((toast) => {
-          addToRemoveQueue(toast.id);
+        state.toasts.forEach((t) => {
+          const existing = toastTimeouts.get(t.id);
+          if (existing) { clearTimeout(existing); toastTimeouts.delete(t.id); }
+          setTimeout(() => dispatch({ type: actionTypes.REMOVE_TOAST, toastId: t.id }), TOAST_DISMISS_DELAY);
         });
       }
 
       return {
         ...state,
         toasts: state.toasts.map((t) =>
-          t.id === toastId || toastId === undefined
-            ? {
-                ...t,
-                open: false,
-              }
-            : t
+          t.id === toastId || toastId === undefined ? { ...t, open: false } : t
         ),
       };
     }
