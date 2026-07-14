@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import PassLogo from './PassLogo';
-import CreditPill from './CreditPill';
+import { CreditPopover, OnboardingTour } from './CreditPopover';
 
 export default function Layout() {
   const location = useLocation();
@@ -72,11 +72,14 @@ export default function Layout() {
         {navItems.map((item) => {
           const active = location.pathname === item.path;
           const Icon = item.icon;
+          const tourAttr = item.path === '/catalogue' ? 'nav-catalogue'
+            : item.path === '/certificates' ? 'nav-certificates' : undefined;
           return (
             <Link
               key={item.path}
               to={item.path}
               onClick={() => setSidebarOpen(false)}
+              data-tour={tourAttr}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 active ? 'bg-white/15 text-white' : 'text-white/60 hover:bg-white/10 hover:text-white'
               }`}
@@ -103,6 +106,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-background">
+      <OnboardingTour user={user} />
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 bg-secondary lg:block">
         <SidebarContent />
@@ -125,10 +129,10 @@ export default function Layout() {
           <button className="lg:hidden text-secondary" onClick={() => setSidebarOpen(true)}><Menu size={22} /></button>
           <div className="lg:hidden"><PassLogo className="text-lg" /></div>
           <div className="flex-1" />
-          <CreditPill balance={balance} />
+          <CreditPopover balance={balance} />
 
           <div className="relative">
-            <button onClick={() => setShowNotifs(!showNotifs)} className="relative rounded-lg p-2 text-secondary hover:bg-muted">
+            <button data-tour="notifications" onClick={() => setShowNotifs(!showNotifs)} className="relative rounded-lg p-2 text-secondary hover:bg-muted">
               <Bell size={20} />
               {notifications.length > 0 && (
                 <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-destructive" />

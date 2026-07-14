@@ -95,7 +95,7 @@ export default function Dashboard() {
 
       {/* MODULE STEPPER */}
       {activeCourse && modules.length > 0 && (
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-card">
+        <div data-tour="stepper" className="rounded-2xl border border-border bg-card p-4 shadow-card">
           <p className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">{activeCourse.title} — your journey</p>
           <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin">
             {modules.map((m, i) => {
@@ -122,7 +122,7 @@ export default function Dashboard() {
       {/* CONTINUE + DELIVERABLES */}
       <div className="grid gap-6 lg:grid-cols-[1.8fr_1fr]">
         {/* Continue where you left off */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
+        <div data-tour="continue" className="rounded-2xl border border-border bg-card p-5 shadow-card">
           <p className="text-sm font-bold text-primary">Continue where you left off</p>
           {activeCourse ? (
             <>
@@ -154,7 +154,7 @@ export default function Dashboard() {
         </div>
 
         {/* Immediate deliverables */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
+        <div data-tour="deliverables" className="rounded-2xl border border-border bg-card p-5 shadow-card">
           <p className="text-sm font-bold text-primary">Your immediate deliverables</p>
           {nextQuiz ? (
             <div className="mt-5 flex items-start gap-4">
