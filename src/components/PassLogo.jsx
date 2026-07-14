@@ -1,10 +1,11 @@
 import React from 'react';
 
-export default function PassLogo({ className = '', showDot = true, light = false }) {
+export default function PassLogo({ className = '', light = false, showDot }) {
   return (
-    <div className={`flex items-center gap-0 font-heading font-extrabold tracking-tight ${className}`}>
-      {showDot && <span className="text-destructive text-[0.9em] mr-[1px]">●</span>}
-      <span className={light ? 'text-white' : 'text-secondary'}>PASS</span>
-    </div>
+    <img
+      src="https://media.base44.com/images/public/6a552d72363fc33d755650fa/68ebda1fd_image.png"
+      alt="PASS"
+      className={`h-8 w-auto object-contain ${light ? 'brightness-0 invert' : ''} ${className}`}
+    />
   );
 }
