@@ -16,9 +16,10 @@ export default function Catalogue() {
   const [unlocking, setUnlocking] = useState(null);
 
   useEffect(() => {
+    if (!user) return;
     Promise.all([
       base44.entities.Course.filter({ is_published: true }, 'order', 50),
-      base44.entities.Enrollment.filter({}, '-updated_date', 50),
+      base44.entities.Enrollment.filter({ created_by_id: user.id }, '-updated_date', 50),
     ]).then(([c, e]) => {
       setCourses(c);
       setEnrollments(e);

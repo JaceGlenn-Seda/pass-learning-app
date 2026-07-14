@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { BookOpen, Compass, ArrowRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import CourseCard from '@/components/CourseCard';
 
 export default function MyCourses() {
+  const { user } = useOutletContext() || {};
   const [enrollments, setEnrollments] = useState([]);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('in_progress');
 
   useEffect(() => {
+    if (!user) return;
     Promise.all([
-      base44.entities.Enrollment.filter({}, '-updated_date', 50),
+      base44.entities.Enrollment.filter({ created_by_id: user.id }, '-updated_date', 50),
       base44.entities.Course.filter({ is_published: true }, 'order', 50),
     ]).then(([e, c]) => { setEnrollments(e); setCourses(c); }).finally(() => setLoading(false));
   }, []);

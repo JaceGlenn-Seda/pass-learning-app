@@ -25,7 +25,7 @@ export default function CoursePlayer() {
     Promise.all([
       base44.entities.Course.get(id),
       base44.entities.Module.filter({ course_id: id }, 'order', 50),
-      base44.entities.Enrollment.filter({ course_id: id }, '-updated_date', 5),
+      base44.entities.Enrollment.filter({ course_id: id, created_by_id: user?.id }, '-updated_date', 5),
     ]).then(([c, m, e]) => {
       setCourse(c);
       setModules(m);
@@ -119,6 +119,10 @@ export default function CoursePlayer() {
 
   if (!course) {
     return <div className="p-8 text-center text-muted-foreground">Course not found.</div>;
+  }
+
+  if (modules.length === 0) {
+    return <div className="p-8 text-center text-muted-foreground">Course content is being prepared. Check back soon.</div>;
   }
 
   if (!enrollment?.unlocked) {
