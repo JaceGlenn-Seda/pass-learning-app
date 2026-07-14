@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 
 const TOAST_LIMIT = 3;
-const TOAST_REMOVE_DELAY = 4000;
-const TOAST_DISMISS_DELAY = 300;
+const TOAST_REMOVE_DELAY = 300;
+const AUTO_DISMISS_DELAY = 4000;
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
@@ -65,16 +65,9 @@ export const reducer = (state, action) => {
       const { toastId } = action;
 
       if (toastId) {
-        // Cancel any pending auto-remove, then schedule quick removal after exit animation
-        const existing = toastTimeouts.get(toastId);
-        if (existing) { clearTimeout(existing); toastTimeouts.delete(toastId); }
-        setTimeout(() => dispatch({ type: actionTypes.REMOVE_TOAST, toastId }), TOAST_DISMISS_DELAY);
+        addToRemoveQueue(toastId);
       } else {
-        state.toasts.forEach((t) => {
-          const existing = toastTimeouts.get(t.id);
-          if (existing) { clearTimeout(existing); toastTimeouts.delete(t.id); }
-          setTimeout(() => dispatch({ type: actionTypes.REMOVE_TOAST, toastId: t.id }), TOAST_DISMISS_DELAY);
-        });
+        state.toasts.forEach((t) => addToRemoveQueue(t.id));
       }
 
       return {
@@ -123,21 +116,13 @@ function toast({ ...props }) {
 
   dispatch({
     type: actionTypes.ADD_TOAST,
-    toast: {
-      ...props,
-      id,
-      open: true,
-      onOpenChange: (open) => {
-        if (!open) dismiss();
-      },
-    },
+    toast: { ...props, id, open: true },
   });
 
-  return {
-    id,
-    dismiss,
-    update,
-  };
+  // Auto-dismiss after 4 seconds
+  setTimeout(() => dismiss(), AUTO_DISMISS_DELAY);
+
+  return { id, dismiss, update };
 }
 
 function useToast() {
