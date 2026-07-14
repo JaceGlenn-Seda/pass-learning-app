@@ -10,10 +10,11 @@ export default function CourseCard({ course, enrollment, onUnlock, unlocking }) 
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all duration-300 hover:shadow-lift hover:-translate-y-1">
-      <div className="relative h-40 overflow-hidden">
+      <div className="relative h-40 overflow-hidden bg-gradient-to-br from-secondary to-primary">
         <img
           src={course.thumbnail}
           alt={course.title}
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-secondary/70 via-secondary/10 to-transparent" />

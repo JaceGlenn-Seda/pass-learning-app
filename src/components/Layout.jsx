@@ -64,7 +64,7 @@ export default function Layout() {
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between px-5 py-5">
-        <Link to="/dashboard"><PassLogo className="text-xl" /></Link>
+        <Link to="/dashboard"><PassLogo light className="text-xl" /></Link>
         <button className="lg:hidden text-white/60" onClick={() => setSidebarOpen(false)}><X size={20} /></button>
       </div>
 
