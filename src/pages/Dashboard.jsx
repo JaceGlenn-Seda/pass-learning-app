@@ -12,16 +12,37 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user) return;
     Promise.all([
       base44.entities.Enrollment.filter({}, '-updated_date', 50),
       base44.entities.Certificate.filter({}, '-created_date', 50),
       base44.entities.Course.filter({ is_published: true }, 'order', 8),
-    ]).then(([e, c, co]) => {
+    ]).then(async ([e, c, co]) => {
       setEnrollments(e);
       setCertificates(c);
       setCourses(co);
+
+      // New user: grant 3 welcome credits and unlock first course
+      if (!user.credit_balance && co.length > 0) {
+        await base44.auth.updateMe({ credit_balance: 3 });
+        const firstCourse = co[0];
+        const alreadyEnrolled = e.some(en => en.course_id === firstCourse.id);
+        if (!alreadyEnrolled) {
+          const enrollment = await base44.entities.Enrollment.create({
+            course_id: firstCourse.id,
+            course_title: firstCourse.title,
+            course_thumbnail: firstCourse.thumbnail,
+            unlocked: true,
+            progress: 0,
+            completed_module_ids: [],
+            status: 'in_progress',
+          });
+          setEnrollments([enrollment]);
+        }
+        refreshUser?.();
+      }
     }).finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const inProgress = enrollments.filter(e => e.status === 'in_progress');
   const completed = enrollments.filter(e => e.status === 'completed');
