@@ -4,6 +4,11 @@ import { ArrowRight, Check, Star, Building2, Users, Award, TrendingUp, Shield, Z
 import { base44 } from '@/api/base44Client';
 import PassLogo from '@/components/PassLogo';
 import { CREDIT_PACKAGES, CORPORATE_BUNDLES, formatKES, COURSE_THUMBNAILS } from '@/lib/brand';
+import { useReveal } from '@/hooks/use-reveal';
+
+const JACE_LOGO = 'https://media.base44.com/images/public/6a552d72363fc33d755650fa/37194d884_ChatGPTImageJul16202612_49_01AM.png';
+
+const LOGOS = ['Safaricom', 'KCB Bank', 'Equity Bank', 'EABL', 'Deloitte EA', 'KPMG'];
 
 export default function Home() {
   const [courses, setCourses] = useState([]);
@@ -15,8 +20,16 @@ export default function Home() {
 
   const featured = courses.slice(0, 6);
 
+  // reveal refs
+  const coursesRef  = useReveal({ stagger: true, base: 90 });
+  const pricingRef  = useReveal({ stagger: true, base: 90 });
+  const corpRef     = useReveal();
+  const testiRef    = useReveal({ stagger: true, base: 90 });
+  const ctaRef      = useReveal();
+  const heroTextRef = useReveal();
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ scrollBehavior: 'smooth' }}>
       {/* Nav */}
       <nav className="sticky top-0 z-50 border-b border-border/60 bg-card/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 lg:px-8">
@@ -40,7 +53,7 @@ export default function Home() {
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, #2E6FE8 0%, transparent 40%), radial-gradient(circle at 80% 70%, #F5A623 0%, transparent 35%)' }} />
         <div className="relative mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-28">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div className="text-center lg:text-left">
+            <div ref={heroTextRef} className="reveal text-center lg:text-left">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-gold" /> East Africa's premium soft-skills platform
               </span>
@@ -96,14 +109,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trusted by */}
+      {/* ── Trusted-by MARQUEE ── */}
       <section className="border-b border-border bg-card py-8">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <p className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Trusted by professionals across East Africa's leading organisations</p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-muted-foreground/60">
-            {['Safaricom', 'KCB Bank', 'Equity Bank', 'EABL', 'Deloitte EA', 'KPMG'].map(c => (
-              <span key={c} className="font-heading text-lg font-bold">{c}</span>
-            ))}
+          <p className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
+            Trusted by professionals across East Africa's leading organisations
+          </p>
+          <div className="marquee-mask">
+            <div className="marquee-track">
+              {/* render twice for seamless loop */}
+              {[...LOGOS, ...LOGOS].map((c, i) => (
+                <span key={i} className="font-heading text-lg font-bold text-muted-foreground/60 whitespace-nowrap">{c}</span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -117,9 +135,9 @@ export default function Home() {
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">Eight focused courses, each ending in a certification quiz. Unlock what you need, when you need it.</p>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((course, i) => (
-              <div key={course.id} className="group overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all hover:shadow-lift hover:-translate-y-1">
+          <div ref={coursesRef} className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((course) => (
+              <div key={course.id} className="reveal group overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all hover:shadow-lift hover:-translate-y-1">
                 <div className="relative h-44 overflow-hidden">
                   <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-secondary/60 to-transparent" />
@@ -154,9 +172,9 @@ export default function Home() {
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">Buy credits in bundles and save. Credits are valid for 12 months — learn at your pace.</p>
           </div>
 
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div ref={pricingRef} className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {CREDIT_PACKAGES.map(pkg => (
-              <div key={pkg.id} className={`relative flex flex-col rounded-2xl border-2 p-6 ${pkg.popular ? 'border-gold bg-card shadow-lift' : 'border-border bg-card shadow-card'}`}>
+              <div key={pkg.id} className={`reveal relative flex flex-col rounded-2xl border-2 p-6 ${pkg.popular ? 'border-gold bg-card shadow-lift' : 'border-border bg-card shadow-card'}`}>
                 {pkg.popular && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold px-4 py-1 text-xs font-bold text-secondary">★ Most Popular</span>
                 )}
@@ -180,7 +198,7 @@ export default function Home() {
       {/* Corporate */}
       <section id="corporate" className="bg-secondary py-20">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div ref={corpRef} className="reveal grid items-center gap-12 lg:grid-cols-2">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90">
                 <Building2 size={15} /> For HR & L&D Teams
@@ -226,13 +244,13 @@ export default function Home() {
             <span className="text-sm font-semibold uppercase tracking-wider text-accent">Learner Stories</span>
             <h2 className="mt-2 font-heading text-3xl font-bold text-secondary lg:text-4xl">Real results from real professionals</h2>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div ref={testiRef} className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               { name: 'Amara Odhiambo', role: 'Procurement Lead, Safaricom', text: 'The Negotiation Skills course changed how I approach every vendor conversation. I closed a deal 18% under budget the week after finishing.', initials: 'AO' },
               { name: 'David Mwangi', role: 'Team Lead, KCB Bank', text: 'Leadership Essentials gave me a framework I actually use daily. My team noticed the difference within a month.', initials: 'DM' },
               { name: 'Faith Njeri', role: 'HR Business Partner, EABL', text: 'We rolled PASS out to 40 managers. The corporate dashboard makes reporting to the board effortless.', initials: 'FN' },
             ].map(t => (
-              <div key={t.name} className="rounded-2xl border border-border bg-card p-6 shadow-card">
+              <div key={t.name} className="reveal rounded-2xl border border-border bg-card p-6 shadow-card">
                 <div className="flex gap-0.5 text-gold">{Array(5).fill().map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
                 <p className="mt-4 text-sm leading-relaxed text-foreground">"{t.text}"</p>
                 <div className="mt-5 flex items-center gap-3">
@@ -250,7 +268,7 @@ export default function Home() {
 
       {/* CTA */}
       <section className="px-4 pb-20 lg:px-8">
-        <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-secondary px-6 py-14 text-center shadow-lift lg:px-12">
+        <div ref={ctaRef} className="reveal mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-secondary px-6 py-14 text-center shadow-lift lg:px-12">
           <Shield className="mx-auto text-gold" size={40} />
           <h2 className="mt-4 font-heading text-3xl font-bold text-white lg:text-4xl">Your next promotion starts here</h2>
           <p className="mx-auto mt-3 max-w-md text-white/70">Join East Africa's professionals learning the skills that actually move careers forward.</p>
@@ -286,8 +304,25 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="mt-10 border-t border-border pt-6 text-center text-xs text-muted-foreground">
-            © 2026 PASS (Parikshit Advisory & Strategy Services). All rights reserved.
+
+          {/* Bottom row */}
+          <div className="mt-10 border-t border-border pt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+            <p className="text-xs text-muted-foreground text-center sm:text-left">
+              © 2026 PASS (Parikshit Advisory & Strategy Services). All rights reserved.
+            </p>
+            <a
+              href="https://jacestudio.framer.website"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 group"
+            >
+              <span className="text-xs text-muted-foreground/70">Built &amp; powered by</span>
+              <img
+                src={JACE_LOGO}
+                alt="Jace Studio"
+                className="h-6 w-auto object-contain opacity-70 transition-opacity duration-200 group-hover:opacity-100"
+              />
+            </a>
           </div>
         </div>
       </footer>
